@@ -1,0 +1,10 @@
+
+
+# connect to MongoDB using the following URL
+mongo-url = __MONGO_DB_URL__
+
+# connect to the Elasticsearch REST API at the following node URLs
+elasticsearch-urls = ["__ELASTIC_URL__"]
+
+elasticsearch-user = "elastic"
+elasticsearch-password = "__ELASTIC_PASSWORD__"
