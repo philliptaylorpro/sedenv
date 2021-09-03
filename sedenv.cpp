@@ -4,23 +4,16 @@
 
 using namespace std;
 
-struct Substitution {
-  string text_in_config;
-  string env_var;
-};
+#define env_var_list vector<string>
 
-struct SubstitutionList {
-  bool success;
-  string error;
-  vector<Substitution> env_vars;
-};
+string read_input();
+env_var_list get_substituion_list(string config);
 
-SubstitutionList get_substituion_list(string config);
+// env_var_name variables shouldn't have __xx__ wrappers
 string get_env_value(string env_var_name);
-string replace_text(string text, string find, string replace);
+string replace_text(string text, string env_var_name, string replace);
 
 int main(int argc, char *argv[]) {
-  string config;
 
   if (argc > 1) {
     if (string(argv[1]) == "--help" || string(argv[1]) == "-h") {
@@ -29,25 +22,30 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  for (std::string line; std::getline(std::cin, line);) {
-      config += line;
-      config += '\n';
-  }
+  string config = read_input();
 
-  const SubstitutionList sl = get_substituion_list(config);
-  for (vector<Substitution>::const_iterator iter = sl.env_vars.begin(); iter != sl.env_vars.end(); ++iter) {
-    clog << "ENV VAR SUBSTITUTION: " << iter->env_var << endl;
-    string env_var_value = get_env_value(iter->env_var);
-    config = replace_text(config, iter->text_in_config, env_var_value);
+  const env_var_list env_var_names = get_substituion_list(config);
+  for (env_var_list::const_iterator env_var_name = env_var_names.begin(); env_var_name != env_var_names.end(); ++env_var_name) {
+    clog << "ENV VAR SUBSTITUTION: " << *env_var_name << endl;
+    string env_var_value = get_env_value(*env_var_name);
+    config = replace_text(config, *env_var_name, env_var_value);
   }
 
   cout << config;
   return 0;
 }
 
-SubstitutionList get_substituion_list(string config) {
-  SubstitutionList retval;
-  retval.success = true;
+string read_input() {
+  string input;
+  for (std::string line; std::getline(std::cin, line);) {
+      input += line;
+      input += '\n';
+  }
+  return input;
+}
+
+env_var_list get_substituion_list(string config) {
+  env_var_list retval;
 
   char prev = '0';
   bool inStr = false;
@@ -58,10 +56,7 @@ SubstitutionList get_substituion_list(string config) {
       if (inStr) {
         inStr = false;
         collected.pop_back(); // __ENV_VAR__ collects as ENV_VAR_  without this due to two character flag.
-        Substitution newSub;
-        newSub.env_var = collected;
-        newSub.text_in_config = "__" + collected + "__";
-        retval.env_vars.push_back(newSub);
+        retval.push_back(collected);
         collected = "";
       } else {
         inStr = true;
@@ -87,6 +82,6 @@ string get_env_value(string env_var_name) {
 }
 
 string replace_text(string text, string find, string replace) {
-  text.replace(text.find(find), find.length(), replace);
+  text.replace(text.find("__" + find + "__"), find.length() + 4, replace);
   return text;
 }
