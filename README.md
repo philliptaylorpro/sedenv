@@ -1,7 +1,7 @@
 
 # sedenv
 
-reads from stdin and writes to stdout, turns __SOME_TEXT__ into whatever env var $SOME_TEXT is set to.
+reads from stdin and writes to stdout, turns \_\_SOME\_TEXT\_\_ into whatever env var $SOME\_TEXT is set to.
 
 Useful in Kubernetes to create config files in entrypoint.sh from env vars, if the program won't accept them.
 
