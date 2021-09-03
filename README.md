@@ -7,6 +7,8 @@ Useful in Kubernetes to create config files in entrypoint.sh from env vars, if t
 
 Written in C++ to remove need for runtime dependencies. binary can just be copied into a docker image.
 
+https://github.com/philliptaylorpro/sedenv
+
 # example usage in Kubernetes
 
 In your docker file

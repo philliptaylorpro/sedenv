@@ -19,8 +19,15 @@ SubstitutionList get_substituion_list(string config);
 string get_env_value(string env_var_name);
 string replace_text(string text, string find, string replace);
 
-int main(int argc, char **argv) {
+int main(int argc, char *argv[]) {
   string config;
+
+  if (argc > 1) {
+    if (string(argv[1]) == "--help" || string(argv[1]) == "-h") {
+      cout << "https://github.com/philliptaylorpro/sedenv/blob/master/README.md" << endl;
+      return 0;
+    }
+  }
 
   for (std::string line; std::getline(std::cin, line);) {
       config += line;
